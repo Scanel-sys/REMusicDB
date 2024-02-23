@@ -3,72 +3,93 @@
 
 #include <string>
 #include <vector>
-#include <sstream>
+#include <algorithm>
+#include <cctype>
 
 
 class Instrument
 {
-private:
+protected:
 	std::string company_name_;
 	std::string model_name_;
-	uint64_t price;
-	uint64_t count;
+	unsigned long price;
+	unsigned long count;
+
+	Instrument(std::vector <std::string>& data);
+
+	static bool isLegalUInt(std::string const& input);
+	static std::string toLowerCase(std::string &data);
+
+	enum class neck { BOLT_ON = 0, SET_NECK, NECK_TROUGH };
+	enum class logic { NO = 0, YES };
+	enum class comparing { DIFFERENT = 0, SAME, SIMILAR };
+	enum class handOrientation { LH = 0, RH };
+	enum class bassType { PRECISION = 0, JAZZ, HALF_ACOUSTIC, NO_FRETS };
 
 public:
-	Instrument(std::vector <std::string> data);
-
 	std::string getCompanyName();
 	std::string getModelName();
-	std::uint64_t getModelPrice();
-	std::uint64_t getModelCount();
+	unsigned long getModelPrice();
+	unsigned long getModelCount();
 
 	void setCompanyName(std::string company_name);
 	void setModelName(std::string model_name);
-	void setModelPrice(uint64_t price);
-	void setModelCount(uint64_t count);
+	void setModelPrice(unsigned long price);
+	void setModelCount(unsigned long count);
 
-	virtual void showInfo() = 0;
+	virtual std::vector <std::string> prepareItemInfo() = 0;
+	static bool isValidData(std::vector <std::string> &data_to_validate);
 };
+
 
 
 class Guitar : public Instrument 
 {
 private:
-	std::string company_name_;
-	std::string model_name_;
-	uint64_t price;
-	uint64_t count;
+	unsigned int strings_;
+	enum neck neck_;
+	unsigned int frets_;
+	enum handOrientation hand_;
 
 public:
-	Guitar(std::vector <std::string> data);
+	Guitar(std::vector <std::string>& data);
 
-	void showInfo() override;
+	std::vector <std::string> prepareItemInfo() override;
+	static bool isValidData(std::vector <std::string>& data_to_validate);
 };
 
-class Keyboard : Instrument
+
+
+class Keyboard : public Instrument
 {
 private:
-	std::string company_name_;
-	std::string model_name_;
-	uint64_t price;
-	uint64_t count;
+	unsigned int keys_;
+	bool usb_;
+	bool modWheel_;
+	bool imitHamMech_;
+	unsigned int analOutput_;
 
 public:
-	Keyboard(std::vector <std::string> data);
+	Keyboard(std::vector <std::string> &data);
 
-	void showInfo() override;
+	std::vector <std::string> prepareItemInfo() override;
+	static bool isValidData(std::vector <std::string>& data_to_validate);
 };
 
-class Bass : Instrument
+
+
+class Bass : public Instrument
 {
 private:
-	std::string company_name_;
-	std::string model_name_;
-	uint64_t price;
-	uint64_t count;
+	unsigned int strings_;
+	enum neck neck_;
+	unsigned int frets_;
+	enum handOrientation hand_;
+	enum bassType typeOfBass_;
 
 public:
-	Bass(std::vector <std::string> data);
+	Bass(std::vector <std::string> &data);
 
-	void showInfo() override;
+	std::vector <std::string> prepareItemInfo() override;
+	static bool isValidData(std::vector <std::string>& data_to_validate);
 };
