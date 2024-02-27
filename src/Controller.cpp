@@ -60,7 +60,7 @@ void Controller::launch()
 std::string Controller::takeUserInput()
 {
 	data_buffer.clear();
-	std::cin >> data_buffer;
+	std::getline(std::cin, data_buffer);
 	return data_buffer;
 }
 
@@ -117,16 +117,27 @@ void Controller::addManualy()
 			break;
 
 		if (data_buffer == "1")
+		{
+			new_item_data.push_back("guitar");
 			temp_instance = this->database_model_->getDummyInstance("guitar");
+		}
 		else if(data_buffer == "2")
+		{
+			new_item_data.push_back("bass guitar");
 			temp_instance = this->database_model_->getDummyInstance("bass guitar");
+		}
 		else if (data_buffer == "3")
+		{
+			new_item_data.push_back("keyboard");
 			temp_instance = this->database_model_->getDummyInstance("keyboard");
-		
+		}
+
 		if (temp_instance != nullptr)
 		{
 			record_fields = temp_instance->takeRecordFieldsStrings();
-			new_item_data = takeUserInputManyTimes(record_fields);
+			std::vector <std::string> user_input = takeUserInputManyTimes(record_fields);
+			new_item_data.insert(new_item_data.end(), user_input.begin(), user_input.end());
+
 			database_model_->requestItemAdding(new_item_data);
 			delete temp_instance;
 		}

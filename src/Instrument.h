@@ -64,7 +64,7 @@ public:
 	void addToStock(unsigned long items_count);
 
 	virtual std::vector <std::string> prepareItemInfo() = 0;
-	std::vector <std::string> takeRecordFieldsStrings();
+	virtual std::vector <std::string> takeRecordFieldsStrings() = 0;
 	virtual bool isValidData(std::vector <std::string> &data_to_validate) = 0;
 };
 
@@ -87,7 +87,7 @@ public:
 	void setHandOriantation(std::string data);
 
 	std::vector <std::string> prepareItemInfo() override;
-	static std::vector <std::string> takeRecordFieldsStrings();
+	std::vector <std::string> takeRecordFieldsStrings() override;
 	bool isValidData(std::vector <std::string>& data_to_validate) override;
 };
 
@@ -112,7 +112,7 @@ public:
 	void setBassType(std::string data);
 
 	std::vector <std::string> prepareItemInfo() override;
-	static std::vector <std::string> takeRecordFieldsStrings();
+	std::vector <std::string> takeRecordFieldsStrings() override;
 	bool isValidData(std::vector <std::string>& data_to_validate) override;
 };
 
@@ -138,6 +138,6 @@ public:
 	void setAnalOutputNum(std::string data);
 
 	std::vector <std::string> prepareItemInfo() override;
-	static std::vector <std::string> takeRecordFieldsStrings();
+	std::vector <std::string> takeRecordFieldsStrings() override;
 	bool isValidData(std::vector <std::string>& data_to_validate) override;
 };

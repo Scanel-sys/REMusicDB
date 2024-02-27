@@ -63,17 +63,6 @@ void Instrument::addToStock(unsigned long items_count)
 	this->count_ += items_count;
 }
 
-std::vector<std::string> Instrument::takeRecordFieldsStrings()
-{
-	return std::vector<std::string>();
-}
-
-//bool Instrument::isValidData(std::vector<std::string> &data_to_validate)
-//{
-//	return false;
-//}
-
-
 std::string Instrument::getCompanyName()
 {
 	return this->company_name_;
@@ -155,6 +144,7 @@ std::vector<std::string> Guitar::takeRecordFieldsStrings()
 	output.push_back("price: ");
 	output.push_back("count: ");
 	output.push_back("strings number: ");
+	output.push_back("neck type: ");
 	output.push_back("frets number: ");
 	output.push_back("hand oriantation: ");
 	return output;
