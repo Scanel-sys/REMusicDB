@@ -132,13 +132,34 @@ void Guitar::setHandOriantation(std::string data)
 
 std::vector <std::string> Guitar::prepareItemInfo()
 {
-	std::vector <std::string> output;
+	std::vector <std::string> output = this->takeRecordFieldsStrings();
+	output[COMPANY_NAME_IDX] += this->company_name_;
+	output[MODEL_NAME_IDX] += this->model_name_;
+	output[PRICE_IDX] += std::to_string(this->price_);
+	output[COUNT_IDX] += std::to_string(this->count_);
+	output[STRINGS_NUMBER_IDX] += std::to_string(this->strings_);
+
+	if (this->neck_ == neck::BOLT_ON)
+		output[NECK_TYPE_IDX] += "bolt on";
+	else if (this->neck_ == neck::SET_NECK)
+		output[NECK_TYPE_IDX] += "set neck";
+	else
+		output[NECK_TYPE_IDX] += "neck through";
+
+	output[FRETS_NUMBER_IDX] += std::to_string(this->frets_);
+
+	if (this->hand_ == handOrientation::LH)
+		output[HAND_ORIANTATION_IDX] += "lh";
+	else
+		output[HAND_ORIANTATION_IDX] += "rh";
+
 	return output;
 }
 
 std::vector<std::string> Guitar::takeRecordFieldsStrings()
 {
 	std::vector<std::string> output;
+	output.push_back("guitar");
 	output.push_back("company name: ");
 	output.push_back("model name: ");
 	output.push_back("price: ");
@@ -243,7 +264,33 @@ void Bass::setBassType(std::string data)
 
 std::vector <std::string> Bass::prepareItemInfo()
 {
-	std::vector <std::string> output;
+	std::vector <std::string> output = this->takeRecordFieldsStrings();
+	output[COMPANY_NAME_IDX] += this->company_name_;
+	output[MODEL_NAME_IDX] += this->model_name_;
+	output[PRICE_IDX] += std::to_string(this->price_);
+	output[COUNT_IDX] += std::to_string(this->count_);
+	output[STRINGS_NUMBER_IDX] += std::to_string(this->strings_);
+	
+	if(this->neck_ == neck::BOLT_ON)
+		output[NECK_TYPE_IDX] += "bolt on";
+	else if(this->neck_ == neck::SET_NECK)
+		output[NECK_TYPE_IDX] += "set neck";
+	else
+		output[NECK_TYPE_IDX] += "neck through";
+
+	output[FRETS_NUMBER_IDX] += std::to_string(this->frets_);
+
+	if (this->hand_ == handOrientation::LH)
+		output[HAND_ORIANTATION_IDX] += "lh";
+	else
+		output[HAND_ORIANTATION_IDX] += "rh";
+
+	if (this->typeOfBass_ == bassType::PRECISION)
+		output[BASS_TYPE_IDX] += "precision";
+	else if(this->typeOfBass_ == bassType::JAZZ)
+		output[BASS_TYPE_IDX] += "jazz";
+	else
+		output[BASS_TYPE_IDX] += "half acoustic";
 
 	return output;
 }
@@ -251,6 +298,7 @@ std::vector <std::string> Bass::prepareItemInfo()
 std::vector<std::string> Bass::takeRecordFieldsStrings()
 {
 	std::vector<std::string> output;
+	output.push_back("bass guitar");
 	output.push_back("company name: ");
 	output.push_back("model name: ");
 	output.push_back("price: ");
@@ -346,14 +394,38 @@ void Keyboard::setAnalOutputNum(std::string data)
 
 std::vector <std::string> Keyboard::prepareItemInfo()
 {
-	std::vector <std::string> output;
+	std::vector <std::string> output = this->takeRecordFieldsStrings();
+	output[COMPANY_NAME_IDX] += this->company_name_;
+	output[MODEL_NAME_IDX] += this->model_name_;
+	output[PRICE_IDX] += std::to_string(this->price_);
+	output[COUNT_IDX] += std::to_string(this->count_);
 
+	output[KEYS_NUMBER_IDX] += std::to_string(this->keys_);
+	
+	if (this->usb_)
+		output[USB_INFO_IDX] += "yes";
+	else
+		output[USB_INFO_IDX] += "no";
+
+	if (this->modWheel_)
+		output[MODUL_WHEEL_INFO_IDX] += "yes";
+	else
+		output[MODUL_WHEEL_INFO_IDX] += "no";
+
+	if (this->imitHamMech_)
+		output[HAMMER_IMITATION_IDX] += "yes";
+	else
+		output[HAMMER_IMITATION_IDX] += "no";
+
+	output[ANALOG_OUT_COUNT_IDX] += std::to_string(this->analOutput_);
+	
 	return output;
 }
 
 std::vector<std::string> Keyboard::takeRecordFieldsStrings()
 {
 	std::vector<std::string> output;
+	output.push_back("keyboard");
 	output.push_back("company name: ");
 	output.push_back("model name: ");
 	output.push_back("price: ");

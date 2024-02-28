@@ -23,5 +23,6 @@ public:
 	void printUserRequest(const std::string& request);
 	void showMainMenu();
 	void showPossibleInstruments();
-
+	void showPassedStrings(const std::vector<std::string> &output_data);
+	void placeCursor(COORD coords);
 };

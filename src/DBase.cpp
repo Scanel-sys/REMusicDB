@@ -61,20 +61,23 @@ void MusicItemsDB::eraseDatabase()
 
 void MusicItemsDB::requestItemAdding(std::vector <std::string>& item_data)
 {
-	std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> find_result;
-	std::string company_name = item_data[0];
-	std::string model_name = item_data[1];
-	find_result = this->findItem(company_name, model_name);
+	std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> item_find_result;
+	std::vector <InstrumentCategory>::iterator category_iterator;
+	std::string company_name = item_data[COMPANY_NAME_IDX];
+	std::string model_name = item_data[MODEL_NAME_IDX];
+	item_find_result = this->findItem(company_name, model_name);
 
-	if (find_result.second)
+	if (item_find_result.second)
 	{
-		this->addToStock(find_result.first, item_data);
+		this->addToStock(item_find_result.first, item_data);
 	}
 	else
 	{
 		this->stockNewItem(item_data);
 	}
-
+	category_iterator = this->findCategory(item_data[INSTRUMENT_CLASS_IDX]).first;
+	item_find_result = this->findItem(company_name, model_name);
+	this->setIterators(category_iterator, item_find_result.first);
 }
 
 std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> MusicItemsDB::findItem(std::string model_name)
@@ -95,7 +98,7 @@ std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> Musi
 
 std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> MusicItemsDB::findItem(std::string company_name, std::string model_name)
 {
-	std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> output;
+	std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, volatile bool> output;
 	output.second = false;
 
 	for (uint8_t i = 0; i < this->getCategoriesNumber() && output.second == false; i++)
@@ -124,6 +127,12 @@ std::vector<InstrumentCategory>::iterator MusicItemsDB::getCategoryIterator(std:
 		{ return temp_category.getCategoryName()  == category_name; });
 }
 
+void MusicItemsDB::setIterators(std::vector<InstrumentCategory>::iterator category_iterator, std::vector<std::reference_wrapper<Instrument>>::iterator item_iterator)
+{
+	this->act_category_ = category_iterator;
+	this->act_category_item_ = item_iterator;
+}
+
 
 size_t MusicItemsDB::getCategoriesNumber()
 {
@@ -138,4 +147,64 @@ Instrument* MusicItemsDB::getDummyInstance(const std::string& instrument_name)
 Instrument* MusicItemsDB::getInstance(const std::vector<std::string>& item_data)
 {
 	return items_class_handlers_[item_data[0]](item_data);
+}
+
+std::vector<std::string> MusicItemsDB::getScrollingItemOutputData()
+{
+	std::vector <std::string> output;
+	if (!ifScrollingCategoryEmpty())
+		output = act_category_item_->get().prepareItemInfo();
+	return output;
+}
+
+bool MusicItemsDB::empty()
+{
+	return this->categories_.empty();
+}
+
+bool MusicItemsDB::ifScrollingCategoryEmpty()
+{
+	return this->act_category_->empty();
+}
+
+bool MusicItemsDB::ifFirstCategory()
+{
+	return this->act_category_ == this->categories_.begin();
+}
+
+bool MusicItemsDB::ifLastCategory()
+{
+	return this->act_category_ == std::prev(this->categories_.end());
+}
+
+bool MusicItemsDB::ifFirstItem()
+{
+	return this->act_category_item_ == this->act_category_->getFirstItemsIterator();
+}
+
+bool MusicItemsDB::ifLastItem()
+{
+	return this->act_category_item_ == this->act_category_->getLastItemsIterator();
+}
+
+void MusicItemsDB::nextCategory()
+{
+	act_category_ = std::next(this->act_category_);
+	act_category_item_ = act_category_->getFirstItemsIterator();
+}
+
+void MusicItemsDB::prevCategory()
+{
+	act_category_ = std::prev(this->act_category_);
+	act_category_item_ = act_category_->getFirstItemsIterator();
+}
+
+void MusicItemsDB::nextItem()
+{
+	std::next(this->act_category_item_);
+}
+
+void MusicItemsDB::prevItem()
+{
+	std::prev(this->act_category_item_);
 }

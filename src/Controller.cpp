@@ -22,10 +22,16 @@ std::vector<std::vector<std::string>> Controller::takeItemsFromFile(fs::path fil
 	return output;
 }
 
+void Controller::setMsg(std::string msg)
+{
+	this->msg = msg;
+}
+
 Controller::Controller(MusicItemsDB* database, View* view)
 {
 	this->view_ = view;
 	this->database_model_ = database;
+	this->msg.clear();
 }
 
 void Controller::launch()
@@ -33,7 +39,10 @@ void Controller::launch()
 	bool programm_is_working = true;
 	while (programm_is_working)
 	{
+		view_->clearScreen();
 		view_->showMainMenu();
+		if(msg_left())
+			send_msg_to_user();
 		view_->printUserInputRequest();
 		this->takeUserInput();
 		
@@ -68,12 +77,26 @@ std::vector <std::string> Controller::takeUserInputManyTimes(std::vector<std::st
 {
 	view_->clearScreen();
 	std::vector <std::string> output;
-	for (int i = 0; i < fields_to_answer.size(); i++)
+	for (int i = 1; i < fields_to_answer.size(); i++)
 	{
 		view_->printUserRequest(fields_to_answer[i]);
 		output.push_back(takeUserInput());
 	}
 	return output;
+}
+
+bool Controller::msg_left()
+{
+	return !this->msg.empty();
+}
+
+void Controller::send_msg_to_user()
+{
+	view_->printUserRequest("================================\n");
+	view_->printUserRequest(msg);
+	view_->printUserRequest("\n");
+	view_->printUserRequest("================================\n");
+	this->msg.clear();
 }
 
 void Controller::takeNewItemsFromFile()
@@ -146,6 +169,36 @@ void Controller::addManualy()
 
 void Controller::scrollDataBase()
 {
+	if (this->database_model_->empty())
+	{
+		this->setMsg("Database is empty");
+		return;
+	}
+
+	std::vector <std::string> output_data;
+	this->data_buffer.clear();
+	while (this->data_buffer != "q")
+	{
+		view_->clearScreen();
+		output_data = gatherScrollingMenu();
+		view_->showPassedStrings(output_data);
+		reserveSpaceForUserInput();
+
+		output_data = database_model_->getScrollingItemOutputData();
+		if (!output_data.empty())
+			view_->showPassedStrings(output_data);
+		else
+			setMsg("scrolling category is empty");
+
+		if (msg_left())send_msg_to_user();
+
+		placeCursorForUserInput();
+
+		view_->printUserInputRequest();
+		this->takeUserInput();
+
+		makeScrolling();
+	}
 
 }
 
@@ -159,5 +212,59 @@ void Controller::eraseDatabase()
 
 void Controller::saveDataToFile()
 {
+	
+}
 
+std::vector<std::string> Controller::gatherScrollingMenu()
+{
+	std::vector<std::string> output;
+
+	if (!this->database_model_->ifFirstCategory())
+		output.push_back("1| Previous category");
+	else
+		output.push_back("=| =================");
+
+	if (!this->database_model_->ifLastCategory())
+		output.push_back("2| Next category");
+	else
+		output.push_back("=| =================");
+
+	if (!this->database_model_->ifFirstItem())
+		output.push_back("3| Previous item");
+	else
+		output.push_back("=| =================");
+
+	if (!this->database_model_->ifLastItem())
+		output.push_back("4| Next item");
+	else
+		output.push_back("=| =================");
+
+	return output;
+}
+
+void Controller::reserveSpaceForUserInput()
+{
+	std::vector<std::string> output{"", "", ""};
+	view_->showPassedStrings(output);
+}
+
+void Controller::placeCursorForUserInput()
+{
+	COORD coords{ 0, 5 };
+	view_->placeCursor(coords);
+}
+
+void Controller::makeScrolling()
+{
+	if (this->data_buffer == "1" && !database_model_->ifFirstCategory())
+		database_model_->prevCategory();
+
+	else if (this->data_buffer == "2" && !database_model_->ifLastCategory())
+		database_model_->nextCategory();
+
+	else if (this->data_buffer == "3" && !database_model_->ifFirstItem())
+		database_model_->prevItem();
+
+	else if (this->data_buffer == "4" && !database_model_->ifLastItem())
+		database_model_->nextItem();
 }

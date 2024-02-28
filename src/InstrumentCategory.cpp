@@ -42,13 +42,33 @@ bool InstrumentCategory::ifItemExist(std::vector< std::reference_wrapper<Instrum
 std::vector<std::reference_wrapper<Instrument>>::iterator InstrumentCategory::findItem(std::string model_name)
 {
 	return std::find_if(this->items_.begin(), this->items_.end(),
-		[model_name](Instrument& item) -> bool 
-		{ return item.getModelName() == model_name; });
+		[model_name](std::reference_wrapper<Instrument> item) -> bool
+		{ return item.get().getModelName() == model_name; });
 }
 
 std::vector< std::reference_wrapper<Instrument>>::iterator InstrumentCategory::findItem(std::string company_name, std::string model_name)
 {
 	return std::find_if(this->items_.begin(), this->items_.end(),
-		[company_name, model_name](Instrument& item) -> bool
-		{ return item.getCompanyName() == company_name && item.getModelName() == model_name;});
+		[company_name, model_name](std::reference_wrapper<Instrument>& item) -> bool
+		{ return item.get().getCompanyName() == company_name && item.get().getModelName() == model_name;});
+}
+
+unsigned long InstrumentCategory::size()
+{
+	return this->items_.size();
+}
+
+bool InstrumentCategory::empty()
+{
+	return this->size() == 0;
+}
+
+std::vector<std::reference_wrapper<Instrument>>::iterator InstrumentCategory::getFirstItemsIterator()
+{
+	return this->items_.begin();
+}
+
+std::vector<std::reference_wrapper<Instrument>>::iterator InstrumentCategory::getLastItemsIterator()
+{
+	return std::prev(this->items_.end());
 }

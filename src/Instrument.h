@@ -10,7 +10,7 @@
 #define BASS_DATA_SIZE			(10)
 #define KEYBOARD_DATA_SIZE		(10)
 
-
+#define INSTRUMENT_CLASS_IDX	(0)
 #define COMPANY_NAME_IDX		(1)
 #define MODEL_NAME_IDX			(2)
 #define PRICE_IDX				(3)
@@ -51,17 +51,17 @@ protected:
 	enum class bassType { PRECISION = 0, JAZZ, HALF_ACOUSTIC, NO_FRETS };
 
 public:
-	std::string getCompanyName();
-	std::string getModelName();
-	unsigned long getModelPrice();
-	unsigned long getModelCount();
+	virtual std::string getCompanyName();
+	virtual std::string getModelName();
+	virtual unsigned long getModelPrice();
+	virtual unsigned long getModelCount();
 
-	void setCompanyName(std::string company_name);
-	void setModelName(std::string model_name);
-	void setModelPrice(unsigned long price);
-	void setModelCount(unsigned long count);
+	virtual void setCompanyName(std::string company_name);
+	virtual void setModelName(std::string model_name);
+	virtual void setModelPrice(unsigned long price);
+	virtual void setModelCount(unsigned long count);
 
-	void addToStock(unsigned long items_count);
+	virtual void addToStock(unsigned long items_count);
 
 	virtual std::vector <std::string> prepareItemInfo() = 0;
 	virtual std::vector <std::string> takeRecordFieldsStrings() = 0;

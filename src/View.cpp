@@ -35,7 +35,6 @@ void View::clearScreen()
 
 void View::showMainMenu()
 {
-    clearScreen();
     for (int i = 0; i < this->main_menu_strings_.size(); i++)
         std::cout << i + 1 << this->main_menu_strings_[i] << "\n";
     printSeparatingLine();
@@ -48,4 +47,16 @@ void View::showPossibleInstruments()
     for (int i = 0; i < this->possible_instruments.size(); i++)
         std::cout << i + 1 << this->possible_instruments[i] << '\n';
     printSeparatingLine();
+}
+
+void View::showPassedStrings(const std::vector<std::string>& output_data)
+{
+    for (int i = 0; i < output_data.size(); i++)
+        std::cout << output_data[i] << '\n';
+}
+
+void View::placeCursor(COORD coords)
+{
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(console, coords);
 }
