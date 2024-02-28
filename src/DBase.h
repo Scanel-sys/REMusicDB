@@ -51,6 +51,7 @@ public:
 	Instrument* getInstance(const std::vector<std::string>& item_data);
 	
 	std::vector <std::string> getScrollingItemOutputData();
+	std::vector<std::vector<std::string>> prepareItemsForFileWrite();
 
 	bool empty();
 	bool ifScrollingCategoryEmpty();

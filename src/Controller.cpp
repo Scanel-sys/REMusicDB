@@ -12,7 +12,7 @@ std::vector<std::vector<std::string>> Controller::takeItemsFromFile(fs::path fil
 		
 		if(!line.empty())
 			temp_item_data.push_back(line);
-		if (line.empty() && !temp_item_data.empty() || input_file.peek() == EOF)
+		if ((line.empty() || input_file.peek() == EOF) && !temp_item_data.empty())
 		{
 			output.push_back(temp_item_data);
 			temp_item_data.clear();
@@ -20,6 +20,23 @@ std::vector<std::vector<std::string>> Controller::takeItemsFromFile(fs::path fil
 	}
 	input_file.close();
 	return output;
+}
+
+std::vector<std::vector<std::string>> Controller::prepareItemsForFileWrite()
+{
+	return database_model_->prepareItemsForFileWrite();
+}
+
+void Controller::writeDataToFile(fs::path filename, std::vector<std::vector<std::string>> data_to_write)
+{
+	std::ofstream output_file{ filename };
+	for (uint64_t i = 0; i < data_to_write.size(); i++)
+	{
+		for(uint64_t j = 0; j < data_to_write[i].size(); j++)
+			output_file << data_to_write[i][j] << '\n';
+		output_file << '\n';
+	}
+	output_file.close();
 }
 
 void Controller::setMsg(std::string msg)
@@ -212,7 +229,26 @@ void Controller::eraseDatabase()
 
 void Controller::saveDataToFile()
 {
-	
+	std::string user_output = "dummy";
+	std::string input_file_name_request{ "input filename (q/y/filename): " };
+
+	view_->clearScreen();
+	view_->printUserRequest(input_file_name_request);
+	user_output = this->takeUserInput();
+	fs::path output_file_path;
+	if (user_output != "q")
+	{
+		if(user_output == "y")
+			output_file_path.append(default_filename);
+		else
+			output_file_path.append(user_output);
+
+		if (fs::exists(output_file_path))
+			fs::remove(output_file_path);
+			
+		std::vector<std::vector<std::string>> items_to_write = prepareItemsForFileWrite();
+		writeDataToFile(output_file_path, items_to_write);
+	}
 }
 
 std::vector<std::string> Controller::gatherScrollingMenu()
@@ -256,15 +292,15 @@ void Controller::placeCursorForUserInput()
 
 void Controller::makeScrolling()
 {
-	if (this->data_buffer == "1" && !database_model_->ifFirstCategory())
+	if (this->data_buffer == "1")
 		database_model_->prevCategory();
 
-	else if (this->data_buffer == "2" && !database_model_->ifLastCategory())
+	else if (this->data_buffer == "2")
 		database_model_->nextCategory();
 
-	else if (this->data_buffer == "3" && !database_model_->ifFirstItem())
+	else if (this->data_buffer == "3")
 		database_model_->prevItem();
 
-	else if (this->data_buffer == "4" && !database_model_->ifLastItem())
+	else if (this->data_buffer == "4")
 		database_model_->nextItem();
 }

@@ -11,6 +11,7 @@ namespace fs = std::filesystem;
 class Controller 
 {
 private:
+	const std::string default_filename{"db_output.txt"};
 	View* view_;
 	MusicItemsDB* database_model_;
 
@@ -18,7 +19,9 @@ private:
 	std::string data_buffer;
 
 	std::vector<std::vector<std::string>> takeItemsFromFile(fs::path filename);
-
+	std::vector<std::vector<std::string>> prepareItemsForFileWrite();
+	void writeDataToFile(fs::path filename, std::vector<std::vector<std::string>> data_to_write);
+	
 	void setMsg(std::string msg);
 
 	std::string takeUserInput();
@@ -36,7 +39,6 @@ private:
 	std::vector <std::string> gatherScrollingMenu();
 	void reserveSpaceForUserInput();
 	void placeCursorForUserInput();
-
 	void makeScrolling();
 
 public:

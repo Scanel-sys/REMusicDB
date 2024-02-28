@@ -1,0 +1,20 @@
+guitar
+hohner
+hsxk42
+300
+5
+6
+set neck
+32
+lh
+
+bass guitar
+hohner
+superbbb
+500
+3
+4
+neck through
+32
+lh
+jazz

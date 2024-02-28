@@ -62,7 +62,7 @@ void MusicItemsDB::eraseDatabase()
 void MusicItemsDB::requestItemAdding(std::vector <std::string>& item_data)
 {
 	std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> item_find_result;
-	std::vector <InstrumentCategory>::iterator category_iterator;
+	std::pair <std::vector <InstrumentCategory>::iterator, bool> category_iterator;
 	std::string company_name = item_data[COMPANY_NAME_IDX];
 	std::string model_name = item_data[MODEL_NAME_IDX];
 	item_find_result = this->findItem(company_name, model_name);
@@ -75,9 +75,10 @@ void MusicItemsDB::requestItemAdding(std::vector <std::string>& item_data)
 	{
 		this->stockNewItem(item_data);
 	}
-	category_iterator = this->findCategory(item_data[INSTRUMENT_CLASS_IDX]).first;
+	category_iterator = this->findCategory(item_data[INSTRUMENT_CLASS_IDX]);
 	item_find_result = this->findItem(company_name, model_name);
-	this->setIterators(category_iterator, item_find_result.first);
+	if(category_iterator.second && item_find_result.second)
+		this->setIterators(category_iterator.first, item_find_result.first);
 }
 
 std::pair <std::vector<std::reference_wrapper<Instrument>>::iterator, bool> MusicItemsDB::findItem(std::string model_name)
@@ -157,6 +158,38 @@ std::vector<std::string> MusicItemsDB::getScrollingItemOutputData()
 	return output;
 }
 
+std::vector<std::vector<std::string>> MusicItemsDB::prepareItemsForFileWrite()
+{
+	std::vector<std::vector<std::string>> output;
+	std::vector<std::string> temp_item_data;
+
+	while (!this->ifFirstCategory())
+		this->prevCategory();
+
+	std::vector <InstrumentCategory>::iterator t_category = this->act_category_;
+	std::vector <std::reference_wrapper<Instrument>>::iterator t_category_item = this->act_category_item_;
+
+	while (t_category != categories_.end())
+	{
+		temp_item_data = t_category_item->get().prepareItemInfo();
+		temp_item_data.push_back("");
+		output.push_back(temp_item_data);
+
+		if (t_category_item == t_category->getLastItemsIterator())
+		{
+			t_category = std::next(t_category);
+			if(t_category != categories_.end())
+				t_category_item = t_category->getFirstItemsIterator();
+		}
+		else
+		{
+			t_category_item = std::next(t_category_item);
+		}
+	} 
+
+	return output;
+}
+
 bool MusicItemsDB::empty()
 {
 	return this->categories_.empty();
@@ -189,22 +222,30 @@ bool MusicItemsDB::ifLastItem()
 
 void MusicItemsDB::nextCategory()
 {
-	act_category_ = std::next(this->act_category_);
-	act_category_item_ = act_category_->getFirstItemsIterator();
+	if (!this->ifLastCategory())
+	{
+		act_category_ = std::next(this->act_category_);
+		act_category_item_ = act_category_->getFirstItemsIterator();
+	}
 }
 
 void MusicItemsDB::prevCategory()
 {
-	act_category_ = std::prev(this->act_category_);
-	act_category_item_ = act_category_->getFirstItemsIterator();
+	if(!this->ifFirstCategory())
+	{
+		act_category_ = std::prev(this->act_category_);
+		act_category_item_ = act_category_->getFirstItemsIterator();
+	}
 }
 
 void MusicItemsDB::nextItem()
 {
-	std::next(this->act_category_item_);
+	if(!this->ifLastItem())
+		this->act_category_item_ = std::next(this->act_category_item_);
 }
 
 void MusicItemsDB::prevItem()
 {
-	std::prev(this->act_category_item_);
+	if(!this->ifFirstItem())
+		this->act_category_item_ = std::prev(this->act_category_item_);
 }
