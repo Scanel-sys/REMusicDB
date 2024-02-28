@@ -19,7 +19,6 @@ private:
 	std::vector <InstrumentCategory>::iterator act_category_;
 	std::vector <std::reference_wrapper<Instrument>>::iterator act_category_item_;
 
-
 	items_class_handlers items_class_handlers_;
 	dummy_class_handlers dummy_class_handlers_;
 

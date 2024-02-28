@@ -156,7 +156,6 @@ void MusicItemsDB::setIterators(std::vector<InstrumentCategory>::iterator catego
 	this->act_category_item_ = item_iterator;
 }
 
-
 size_t MusicItemsDB::getCategoriesNumber()
 {
 	return this->categories_.size();

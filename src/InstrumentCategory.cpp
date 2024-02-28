@@ -8,7 +8,6 @@ InstrumentCategory::InstrumentCategory(std::string category_name)
 
 InstrumentCategory::~InstrumentCategory()
 {
-
 }
 
 
