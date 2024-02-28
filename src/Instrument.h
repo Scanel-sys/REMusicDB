@@ -6,29 +6,30 @@
 #include <algorithm>
 #include <cctype>
 
-#define GUITAR_DATA_SIZE		(9)
+#define GUITAR_DATA_SIZE		 (9)
 #define BASS_DATA_SIZE			(10)
 #define KEYBOARD_DATA_SIZE		(10)
 
-#define INSTRUMENT_CLASS_IDX	(0)
-#define COMPANY_NAME_IDX		(1)
-#define MODEL_NAME_IDX			(2)
-#define PRICE_IDX				(3)
-#define COUNT_IDX				(4)
+#define INSTRUMENT_CLASS_IDX	 (0)
+#define COMPANY_NAME_IDX		 (1)
+#define MODEL_NAME_IDX			 (2)
+#define PRICE_IDX				 (3)
+#define COUNT_IDX				 (4)
 
-#define STRINGS_NUMBER_IDX		(5)
-#define NECK_TYPE_IDX			(6)
-#define FRETS_NUMBER_IDX		(7)
-#define HAND_ORIANTATION_IDX	(8)
+#define STRINGS_NUMBER_IDX		 (5)
+#define NECK_TYPE_IDX			 (6)
+#define FRETS_NUMBER_IDX		 (7)
+#define HAND_ORIANTATION_IDX	 (8)
 
-#define BASS_TYPE_IDX			(9)
+#define BASS_TYPE_IDX			 (9)
 
-#define KEYS_NUMBER_IDX			(5)
-#define USB_INFO_IDX			(6)
-#define	MODUL_WHEEL_INFO_IDX	(7)
-#define HAMMER_IMITATION_IDX	(8)
-#define ANALOG_OUT_COUNT_IDX	(9)
+#define KEYS_NUMBER_IDX			 (5)
+#define USB_INFO_IDX			 (6)
+#define	MODUL_WHEEL_INFO_IDX	 (7)
+#define HAMMER_IMITATION_IDX	 (8)
+#define ANALOG_OUT_COUNT_IDX	 (9)
 
+#define SCROLLING_USER_INPUT_POS (7)
 
 class Instrument
 {
@@ -41,8 +42,8 @@ protected:
 	Instrument();
 	Instrument(std::vector <std::string>& data);
 
-	static bool isLegalUInt(std::string const& input);
 	static std::string toLowerCase(std::string &data);
+	static bool isLegalUInt(std::string const& input);
 
 	enum class neck { BOLT_ON = 0, SET_NECK, NECK_TROUGH };
 	enum class logic { NO = 0, YES };
@@ -51,6 +52,7 @@ protected:
 	enum class bassType { PRECISION = 0, JAZZ, HALF_ACOUSTIC, NO_FRETS };
 
 public:
+
 	virtual std::string getCompanyName();
 	virtual std::string getModelName();
 	virtual unsigned long getModelPrice();
@@ -62,6 +64,7 @@ public:
 	virtual void setModelCount(unsigned long count);
 
 	virtual void addToStock(unsigned long items_count);
+	virtual void takeFromStock(unsigned long take_from_stock);
 
 	virtual std::vector <std::string> prepareItemInfo() = 0;
 	virtual std::vector <std::string> takeRecordFieldsStrings() = 0;

@@ -3,13 +3,25 @@
 
 void MusicItemsDB::addToStock(std::vector<std::reference_wrapper<Instrument>>::iterator item_iter, std::vector<std::string>& item_data)
 {
-	unsigned long items_count = std::stoul(item_data[3]);
-	item_iter->get().addToStock(items_count);
+	if (isLegalUInt(item_data[COUNT_IDX]))
+	{
+		unsigned long items_count = std::stoul(item_data[COUNT_IDX]);
+		item_iter->get().addToStock(items_count);
+	}
+}
+
+void MusicItemsDB::addToStock(std::vector<std::reference_wrapper<Instrument>>::iterator item_iter, unsigned long add_to_stock_count)
+{
+	item_iter->get().addToStock(add_to_stock_count);
+}
+void MusicItemsDB::takeFromStock(std::vector<std::reference_wrapper<Instrument>>::iterator item_iter, unsigned long take_from_stock_count)
+{
+	item_iter->get().takeFromStock(take_from_stock_count);
 }
 
 void MusicItemsDB::stockNewItem(std::vector<std::string>& item_data)
 {
-	std::string item_type = item_data[0];
+	std::string item_type = item_data[INSTRUMENT_CLASS_IDX];
 	Instrument* validator_instance = getDummyInstance(item_type);
 	if (validator_instance->isValidData(item_data))
 	{
@@ -34,6 +46,16 @@ MusicItemsDB::MusicItemsDB()
 	this->dummy_class_handlers_["guitar"] = &createDummyInstance<Guitar>;
 	this->dummy_class_handlers_["keyboard"] = &createDummyInstance<Keyboard>;
 	this->dummy_class_handlers_["bass guitar"] = &createDummyInstance<Bass>;
+}
+
+bool MusicItemsDB::isLegalUInt(std::string const& input)
+{
+	bool result = true;
+
+	for (uint64_t i = 0; i < input.size() && result; i++)
+		result = isdigit(input[i]);
+
+	return result;
 }
 
 MusicItemsDB::~MusicItemsDB()
@@ -248,4 +270,14 @@ void MusicItemsDB::prevItem()
 {
 	if(!this->ifFirstItem())
 		this->act_category_item_ = std::prev(this->act_category_item_);
+}
+
+void MusicItemsDB::stockToScrollingItem(unsigned long count)
+{
+	addToStock(act_category_item_, count);
+}
+
+void MusicItemsDB::takeScrollingItemFromStock(unsigned long count)
+{
+	takeFromStock(act_category_item_, count);
 }

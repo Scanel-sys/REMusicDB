@@ -40,6 +40,7 @@ private:
 	void reserveSpaceForUserInput();
 	void placeCursorForUserInput();
 	void makeScrolling();
+	void handleStocking();
 
 public:
 	Controller(MusicItemsDB* database, View* view);

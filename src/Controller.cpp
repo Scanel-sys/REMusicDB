@@ -275,6 +275,9 @@ std::vector<std::string> Controller::gatherScrollingMenu()
 	else
 		output.push_back("=| =================");
 
+	output.push_back("5| Stock item");
+	output.push_back("6| Take item");
+
 	return output;
 }
 
@@ -286,7 +289,7 @@ void Controller::reserveSpaceForUserInput()
 
 void Controller::placeCursorForUserInput()
 {
-	COORD coords{ 0, 5 };
+	COORD coords{ 0, SCROLLING_USER_INPUT_POS };
 	view_->placeCursor(coords);
 }
 
@@ -303,4 +306,36 @@ void Controller::makeScrolling()
 
 	else if (this->data_buffer == "4")
 		database_model_->nextItem();
+
+	else if (this->data_buffer == "5" ||
+		this->data_buffer == "6")
+		handleStocking();
+}
+
+void Controller::handleStocking()
+{
+	view_->clearScreen();
+	if (data_buffer == "5")
+	{
+		view_->printUserRequest("How many want to stock?");
+		view_->printUserInputRequest();
+		std::string user_input = takeUserInput();
+		if (user_input != "q")
+		{
+			if (database_model_->isLegalUInt(user_input))
+				database_model_->stockToScrollingItem(std::stoul(user_input));
+		}
+	}
+	else if (data_buffer == "6")
+	{
+		view_->printUserRequest("How many want to take?");
+		view_->printUserInputRequest();
+		std::string user_input = takeUserInput();
+		if (user_input != "q")
+		{
+			if (database_model_->isLegalUInt(user_input))
+				database_model_->takeScrollingItemFromStock(std::stoul(user_input));
+		}
+	}
+
 }

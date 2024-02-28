@@ -26,6 +26,8 @@ private:
 	std::vector <InstrumentCategory> categories_;
 
 	void addToStock(std::vector<std::reference_wrapper<Instrument>>::iterator item_iter, std::vector <std::string>& item_data);
+	void addToStock(std::vector<std::reference_wrapper<Instrument>>::iterator item_iter, unsigned long add_to_stock_count);
+	void takeFromStock(std::vector<std::reference_wrapper<Instrument>>::iterator item_iter, unsigned long take_from_stock_count);
 	void stockNewItem(std::vector <std::string>& item_data);
 
 	std::vector<InstrumentCategory>::iterator getCategoryIterator(std::string category_name);
@@ -53,6 +55,8 @@ public:
 	std::vector <std::string> getScrollingItemOutputData();
 	std::vector<std::vector<std::string>> prepareItemsForFileWrite();
 
+	static bool isLegalUInt(std::string const& input);
+
 	bool empty();
 	bool ifScrollingCategoryEmpty();
 
@@ -65,4 +69,7 @@ public:
 	void prevCategory();
 	void nextItem();
 	void prevItem();
+
+	void stockToScrollingItem(unsigned long count);
+	void takeScrollingItemFromStock(unsigned long count);
 };

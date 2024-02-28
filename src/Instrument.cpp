@@ -63,6 +63,12 @@ void Instrument::addToStock(unsigned long items_count)
 	this->count_ += items_count;
 }
 
+void Instrument::takeFromStock(unsigned long take_from_stock)
+{
+	if (this->count_ >= take_from_stock)
+		this->count_ -= take_from_stock;
+}
+
 std::string Instrument::getCompanyName()
 {
 	return this->company_name_;
